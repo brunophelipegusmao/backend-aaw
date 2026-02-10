@@ -96,3 +96,62 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Aura Activewear (MVP)
+
+### Environment Variables
+
+See `.env.example` for the full list.
+
+Required for local dev:
+- `DATABASE_URL`
+- `BETTER_AUTH_SECRET`
+- `BETTER_AUTH_BASE_URL`
+- `BETTER_AUTH_TRUSTED_ORIGINS`
+- `REDIS_URL`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+
+### Database (Drizzle + Neon)
+
+This repo ships with simple SQL migrations and scripts.
+
+1. Run migrations:
+
+```bash
+pnpm db:migrate
+```
+
+2. Seed sample data (categories/products/variants/reviews) and create the default admin user:
+
+```bash
+pnpm db:seed
+```
+
+### Auth (BetterAuth)
+
+The API proxies BetterAuth endpoints under `/api/v1/auth` and exposes:
+- `POST /api/v1/auth/register`
+- `POST /api/v1/auth/login`
+- `POST /api/v1/auth/logout`
+- `GET  /api/v1/auth/me`
+
+### Stripe
+
+Endpoints:
+- `POST /api/v1/payments/checkout-session`
+- `POST /api/v1/stripe/webhook`
+
+Webhook requirements implemented:
+- Raw body validation with `Stripe-Signature`
+- Idempotency via `stripe_events(event_id UNIQUE)`
+- Enqueue processing job quickly (BullMQ)
+
+### Local Run
+
+```bash
+pnpm install
+pnpm db:migrate
+pnpm db:seed
+pnpm start:dev
+```
